@@ -25,15 +25,19 @@ jobs:
       - name: Aceita licenças do SDK
         run: yes | sdkmanager --licenses || true
 
-      - name: Corrige gradlew
+      - name: Substitui gradlew por versão funcional
         run: |
-          chmod +x ./gradlew
-          sed -i 's/DEFAULT_JVM_OPTS=.*/DEFAULT_JVM_OPTS=""/' gradlew
+          cat > gradlew << 'EOF'
+          #!/bin/sh
+          exec java -Xmx2048m -Xms64m \
+            -Dorg.gradle.appname=gradlew \
+            -classpath gradle/wrapper/gradle-wrapper.jar \
+            org.gradle.wrapper.GradleWrapperMain "$@"
+          EOF
+          chmod +x gradlew
 
       - name: Build APK debug
         run: ./gradlew assembleDebug --no-daemon
-        env:
-          JAVA_TOOL_OPTIONS: "-Xmx2048m"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
