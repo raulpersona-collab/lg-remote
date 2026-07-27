@@ -25,11 +25,15 @@ jobs:
       - name: Aceita licenças do SDK
         run: yes | sdkmanager --licenses || true
 
-      - name: Permissão no gradlew
-        run: chmod +x ./gradlew
+      - name: Corrige gradlew
+        run: |
+          chmod +x ./gradlew
+          sed -i 's/DEFAULT_JVM_OPTS=.*/DEFAULT_JVM_OPTS=""/' gradlew
 
       - name: Build APK debug
         run: ./gradlew assembleDebug --no-daemon
+        env:
+          JAVA_TOOL_OPTIONS: "-Xmx2048m"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
