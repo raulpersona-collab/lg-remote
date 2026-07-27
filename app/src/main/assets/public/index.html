@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>LG AN-MR650A Remote</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0d0d0d;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 8px 40px;font-family:Arial,sans-serif;user-select:none}
+
+/* STATUS BAR */
+.sb{width:100%;max-width:320px;background:#1a1a1a;border:1px solid #252525;border-radius:8px;padding:7px 13px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.dt{width:8px;height:8px;border-radius:50%;background:#2e2e2e;flex-shrink:0;transition:.3s}
+.dt.on{background:#4caf50;box-shadow:0 0 5px #4caf50}
+.st{color:#666;font-size:12px;flex:1}.si{color:#383838;font-size:11px}
+
+/* TRACKPAD TOGGLE */
+.tpbtn{width:100%;max-width:320px;padding:9px 14px;margin-bottom:10px;background:linear-gradient(180deg,#1e1e1e,#151515);border:1px solid #252525;border-radius:11px;color:#4a4a4a;font-size:12px;font-weight:bold;cursor:pointer;display:none;align-items:center;justify-content:space-between;box-shadow:0 2px 0 #050505}
+.tpbtn.on{background:linear-gradient(180deg,#0e1e30,#0a141e);color:#4090d0;border-color:#153050}
+.tpar{transition:transform .25s}.tpbtn.on .tpar{transform:rotate(180deg)}
+
+/* TRACKPAD PANEL */
+.tpp{width:100%;max-width:320px;background:#0c0c0c;border:1px solid #1a1a1a;border-radius:13px;margin-bottom:10px;overflow:hidden;max-height:0;transition:max-height .3s,padding .3s;padding:0 11px}
+.tpp.op{max-height:380px;padding:11px}
+.tpa{width:100%;height:180px;background:#070707;border:1px solid #151515;border-radius:11px;position:relative;overflow:hidden;touch-action:none;display:flex;align-items:center;justify-content:center}
+.tpa::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.01) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.tph{color:#1e1e1e;font-size:11px;pointer-events:none;text-align:center;line-height:1.7;transition:opacity .3s}.tph.gn{opacity:0}
+.tpd{position:absolute;width:30px;height:30px;border-radius:50%;background:rgba(64,144,208,.18);border:2px solid rgba(64,144,208,.4);pointer-events:none;display:none;transform:translate(-50%,-50%)}.tpd.on{display:block}
+.tpr{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}
+.tt{height:28px;border-radius:7px;border:none;background:#161616;color:#555;font-size:10px;cursor:pointer;box-shadow:0 1px 0 #050505}.tt:active{filter:brightness(.6)}.tt.cl{color:#4090d0}
+.tss{display:flex;align-items:center;gap:7px;margin-top:7px}
+.tss span{color:#303030;font-size:10px;min-width:58px}.tsv{min-width:12px;text-align:right}
+
+/* REMOTE BODY — fiel ao AN-MR650A */
+.rm{width:222px;background:linear-gradient(180deg,#1c1c1c,#131313 45%,#0f0f0f);border-radius:111px 111px 86px 86px;padding:20px 16px 26px;box-shadow:0 0 0 1px #252525,0 8px 28px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.04);display:flex;flex-direction:column;align-items:center}
+
+/* BASE BUTTON */
+.b{cursor:pointer;border:none;outline:none;display:flex;align-items:center;justify-content:center;transition:transform .07s,filter .07s}
+.b:active,.bc:active{transform:scale(.88);filter:brightness(.55)}
+
+/* POWER ROW */
+.prow{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0 10px;margin-bottom:14px}
+.bpw{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f44336,#b71c1c);box-shadow:0 3px 10px rgba(0,0,0,.7),0 0 0 2px #7f0000,inset 0 1px 0 rgba(255,255,255,.17);color:#fff;font-size:19px}
+.bstb{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2a2a2a,#1a1a1a);box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 1px #343434,inset 0 1px 0 rgba(255,255,255,.05);color:#999;font-size:7.5px;font-weight:bold;line-height:1.25;text-align:center;letter-spacing:.2px}
+
+/* NUMPAD */
+.np{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:100%;margin-bottom:7px}
+.bn{height:36px;border-radius:8px;background:linear-gradient(180deg,#282828,#1e1e1e);box-shadow:0 3px 0 #080808,inset 0 1px 0 rgba(255,255,255,.06);color:#d8d8d8;font-size:15px;font-weight:500}
+
+/* -LIST / 0 / ⊟ */
+.rl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;width:100%;margin-bottom:11px}
+.bl{height:30px;border-radius:7px;background:linear-gradient(180deg,#222,#1a1a1a);box-shadow:0 2px 0 #080808;color:#777;font-size:9px;letter-spacing:.3px}.bl.bg{font-size:14px;color:#c8c8c8}
+
+/* QUICK ACCESS label */
+.qa{color:#303030;font-size:7.5px;letter-spacing:1px;margin-bottom:7px}
+
+/* VOL/MUTE/CH grid — 3 colunas como no controle real */
+.vmcg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;width:100%;align-items:center}
+.bvp{width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,#282828,#1c1c1c);box-shadow:0 2px 0 #080808,inset 0 1px 0 rgba(255,255,255,.05);color:#b0b0b0;font-size:18px;justify-self:center}
+.bmt{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2a2a2a,#1a1a1a);box-shadow:0 2px 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);color:#c0c0c0;font-size:14px;justify-self:center}
+.bch{width:40px;height:26px;border-radius:7px;background:linear-gradient(180deg,#282828,#1c1c1c);box-shadow:0 2px 0 #080808,inset 0 1px 0 rgba(255,255,255,.05);color:#b0b0b0;font-size:13px;justify-self:center}
+.lblg{display:grid;grid-template-columns:1fr 1fr 1fr;width:100%;margin:4px 0 6px}
+.lblg span{text-align:center;color:#383838;font-size:8.5px;letter-spacing:.5px}
+
+/* MIC — centralizado */
+.microw{display:flex;justify-content:center;width:100%;margin-bottom:9px}
+.bmic{width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2a2a2a,#1a1a1a);box-shadow:0 3px 0 #080808,0 0 0 1px #343434,inset 0 1px 0 rgba(255,255,255,.06);color:#999;font-size:20px}
+.bmic.on{color:#4caf50;box-shadow:0 0 12px rgba(76,175,80,.4)}
+
+/* HOME + SETTINGS */
+.hs{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0 14px;margin-bottom:10px}
+.bhm,.bse{width:36px;height:36px;border-radius:9px;background:linear-gradient(180deg,#222,#1a1a1a);box-shadow:0 2px 0 #080808;color:#888;font-size:16px}
+
+/* SCROLL WHEEL */
+.wc{position:relative;width:134px;height:134px;margin:2px 0 11px}
+.wr2{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 28%,#282828,#131313);box-shadow:0 0 0 2px #2c2c2c,0 6px 18px rgba(0,0,0,.9),inset 0 3px 5px rgba(255,255,255,.03);overflow:hidden}
+.wr2::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1e1e1e,#111);box-shadow:inset 0 3px 8px rgba(0,0,0,.9)}
+.wd{position:absolute;display:flex;align-items:center;justify-content:center;color:#404040;font-size:13px;width:30px;height:30px;z-index:2;cursor:pointer}.wd:active{color:#b0b0b0}
+.wu2{top:5px;left:50%;transform:translateX(-50%)}
+.wd2{bottom:5px;left:50%;transform:translateX(-50%)}
+.wl2{left:5px;top:50%;transform:translateY(-50%)}
+.wr3{right:5px;top:50%;transform:translateY(-50%)}
+.bok{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#2c2c2c,#181818);box-shadow:0 0 0 1px #343434,0 2px 8px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05);color:#808080;font-size:11px;font-weight:bold;z-index:3;cursor:pointer;border:none;letter-spacing:.5px}
+.bok:active{transform:translate(-50%,-50%) scale(.88);filter:brightness(.55)}
+
+/* BACK + GUIDE */
+.bgrow{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0 4px;margin-bottom:11px;gap:6px}
+.bbk,.bgd{flex:1;height:32px;border-radius:16px;background:linear-gradient(180deg,#222,#1a1a1a);box-shadow:0 2px 0 #080808;color:#888;font-size:10px;font-weight:bold;letter-spacing:.6px}
+
+/* NETFLIX + INPUT + AMAZON */
+.nirow{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0 2px;margin-bottom:11px;gap:5px}
+.bnf{flex:1;height:32px;border-radius:8px;background:#080808;box-shadow:0 2px 0 #050505,0 0 0 1px #1c1c1c;color:#e50914;font-size:10px;font-weight:900;letter-spacing:.5px}
+.bip{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#252525,#161616);box-shadow:0 2px 6px rgba(0,0,0,.6),0 0 0 1px #2e2e2e;color:#707070;font-size:14px;flex-shrink:0}
+.bam{flex:1;height:32px;border-radius:8px;background:#080808;box-shadow:0 2px 0 #050505,0 0 0 1px #1c1c1c;color:#f90;font-size:9.5px;font-weight:bold}
+
+/* COLORS */
+.rc{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;width:100%;margin-bottom:11px}
+.bc{height:24px;border-radius:7px;border:none;cursor:pointer}
+.bred{background:linear-gradient(180deg,#e53935,#b71c1c);box-shadow:0 2px 0 #680000}
+.bgrn{background:linear-gradient(180deg,#43a047,#1b5e20);box-shadow:0 2px 0 #0a3a0a}
+.byel{background:linear-gradient(180deg,#fdd835,#f9a825);box-shadow:0 2px 0 #9a5800}
+.bblu{background:linear-gradient(180deg,#1e88e5,#0d47a1);box-shadow:0 2px 0 #02246e}
+
+/* PLAY + PAUSE + LIVE ZOOM/FOCUS */
+.pprow{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0 6px;gap:7px}
+.bpl,.bpa{width:34px;height:34px;border-radius:50%;background:linear-gradient(180deg,#222,#181818);box-shadow:0 2px 0 #080808,0 0 0 1px #2c2c2c;color:#787878;font-size:13px}
+.blz{flex:1;height:30px;border-radius:7px;background:linear-gradient(180deg,#181818,#111);box-shadow:0 2px 0 #080808,0 0 0 1px #242424;color:#606060;font-size:7.5px;font-weight:bold;line-height:1.3;text-align:center}
+
+.lglogo{margin-top:8px;color:#c41230;font-size:13px;font-weight:bold;opacity:.55;letter-spacing:1px}
+
+/* CONFIG */
+.cfgbtn{margin-top:11px;background:#141414;border:1px solid #202020;border-radius:18px;color:#3e3e3e;font-size:11px;padding:6px 16px;cursor:pointer}
+.cfgp{display:none;width:100%;max-width:320px;background:#141414;border:1px solid #1e1e1e;border-radius:11px;padding:13px;margin-top:10px}
+.cfgl{color:#343434;font-size:10px;letter-spacing:.5px;margin-bottom:9px}
+.cfgr{display:flex;gap:7px;align-items:center;margin-bottom:7px}
+.cfgr label{color:#424242;font-size:11px;min-width:68px}
+.cfgr input{flex:1;padding:6px 9px;background:#1a1a1a;border:1px solid #262626;border-radius:6px;color:#aaa;font-size:12px;outline:none}
+.cfgr input:focus{border-color:#c41230}
+.cfgconn{width:100%;padding:8px;background:#c41230;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer;margin-top:3px}.cfgconn:active{background:#8a0c20}
+.logb{background:#080808;border:1px solid #161616;border-radius:5px;padding:7px;height:76px;overflow-y:auto;font-size:10px;font-family:monospace;color:#363636;margin-top:7px;word-break:break-all}
+
+/* TOAST */
+.tst{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-70px);background:rgba(16,16,16,.97);border:1px solid #262626;color:#aaa;padding:7px 15px;border-radius:16px;font-size:12px;z-index:999;white-space:nowrap;pointer-events:none;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}.tst.on{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="sb">
+  <div class="dt" id="dt"></div>
+  <span class="st" id="stx">Desconectado</span>
+  <span class="si" id="sip"></span>
+</div>
+
+<!-- TRACKPAD TOGGLE -->
+<button class="tpbtn" id="tpbtn" onclick="tpTog()">
+  <span style="display:flex;align-items:center;gap:8px">🖱️ Trackpad Magic Remote</span>
+  <span class="tpar" id="tpar">▼</span>
+</button>
+
+<!-- TRACKPAD PANEL -->
+<div class="tpp" id="tpp">
+  <div class="tpa" id="tpa">
+    <div class="tph" id="tph">deslize para mover o cursor na TV<br>toque rápido = click</div>
+    <div class="tpd" id="tpd"></div>
+  </div>
+  <div class="tpr">
+    <button class="tt cl" onclick="ck()">◉ Click</button>
+    <button class="tt" onclick="bt('UP')">↑ Scroll</button>
+    <button class="tt" onclick="bt('DOWN')">↓ Scroll</button>
+    <button class="tt" onclick="bt('BACK')">⟵ Voltar</button>
+  </div>
+  <div class="tss">
+    <span>Sensibilidade</span>
+    <input type="range" min="1" max="10" value="5" id="sn" oninput="S=+this.value;document.getElementById('sv').textContent=this.value" style="flex:1;accent-color:#4090d0">
+    <span class="tsv" id="sv">5</span>
+  </div>
+</div>
+
+<!-- REMOTE AN-MR650A -->
+<div class="rm">
+
+  <!-- 1. POWER + STB/PWR -->
+  <div class="prow">
+    <button class="b bpw" onclick="sp('ssap://system/turnOff',{})">⏻</button>
+    <button class="b bstb" onclick="bt('EXIT')">STB<br>PWR</button>
+  </div>
+
+  <!-- 2-4. NUMPAD 1-9 -->
+  <div class="np">
+    <button class="b bn" onclick="bt('1')">1</button>
+    <button class="b bn" onclick="bt('2')">2</button>
+    <button class="b bn" onclick="bt('3')">3</button>
+    <button class="b bn" onclick="bt('4')">4</button>
+    <button class="b bn" onclick="bt('5')">5</button>
+    <button class="b bn" onclick="bt('6')">6</button>
+    <button class="b bn" onclick="bt('7')">7</button>
+    <button class="b bn" onclick="bt('8')">8</button>
+    <button class="b bn" onclick="bt('9')">9</button>
+  </div>
+
+  <!-- 5. -LIST / 0 / ⊟ -->
+  <div class="rl">
+    <button class="b bl" onclick="bt('LIST')">-LIST</button>
+    <button class="b bl bg" onclick="bt('0')">0</button>
+    <button class="b bl" onclick="bt('MORE')">⊟</button>
+  </div>
+
+  <!-- QUICK ACCESS label -->
+  <div class="qa">QUICK ACCESS</div>
+
+  <!-- 6. VOL+ / MUTE / CH∧ -->
+  <div class="vmcg" style="margin-bottom:5px">
+    <button class="b bvp" onclick="volUp()">＋</button>
+    <button class="b bmt" id="bmut" onclick="mute()">🔇</button>
+    <button class="b bch" onclick="chUp()">∧</button>
+  </div>
+
+  <!-- Labels VOL / (vazio) / CH -->
+  <div class="lblg">
+    <span>VOL</span>
+    <span></span>
+    <span>CH</span>
+  </div>
+
+  <!-- 7. VOL− / MIC / CH∨ -->
+  <div class="vmcg" style="margin-bottom:10px">
+    <button class="b bvp" onclick="volDn()">－</button>
+    <button class="b bmic" id="bmic" onclick="mc()">🎤</button>
+    <button class="b bch" onclick="chDn()">∨</button>
+  </div>
+
+  <!-- 8. HOME + SETTINGS(⚙) -->
+  <div class="hs">
+    <button class="b bhm" onclick="home()">⌂</button>
+    <button class="b bse" onclick="cfg_settings()">⚙️</button>
+  </div>
+
+  <!-- 9. SCROLL WHEEL -->
+  <div class="wc">
+    <div class="wr2" id="wr">
+      <div class="wd wu2" onclick="bt('UP')">▲</div>
+      <div class="wd wd2" onclick="bt('DOWN')">▼</div>
+      <div class="wd wl2" onclick="bt('LEFT')">◀</div>
+      <div class="wd wr3" onclick="bt('RIGHT')">▶</div>
+      <button class="bok" onclick="ck()">OK</button>
+    </div>
+  </div>
+
+  <!-- 10. BACK + GUIDE -->
+  <div class="bgrow">
+    <button class="b bbk" onclick="bt('BACK')">BACK</button>
+    <button class="b bgd" onclick="bt('GUIDE')">GUIDE</button>
+  </div>
+
+  <!-- 11. NETFLIX + INPUT + AMAZON -->
+  <div class="nirow">
+    <button class="b bnf" onclick="sp('ssap://system.launcher/launch',{id:'netflix'})">NETFLIX</button>
+    <button class="b bip" onclick="input_btn()">⇄</button>
+    <button class="b bam" onclick="sp('ssap://system.launcher/launch',{id:'amazon'})">amazon</button>
+  </div>
+
+  <!-- 12. CORES -->
+  <div class="rc">
+    <button class="bc bred"  onclick="bt('RED')"></button>
+    <button class="bc bgrn"  onclick="bt('GREEN')"></button>
+    <button class="bc byel"  onclick="bt('YELLOW')"></button>
+    <button class="bc bblu"  onclick="bt('BLUE')"></button>
+  </div>
+
+  <!-- 13. PLAY + PAUSE + LIVE ZOOM/FOCUS -->
+  <div class="pprow">
+    <button class="b bpl" onclick="sp('ssap://media.controls/play',{})">▶</button>
+    <button class="b bpa" onclick="sp('ssap://media.controls/pause',{})">⏸</button>
+    <button class="b blz" onclick="bt('MAGNIFIER_ZOOM')">LIVE ZOOM<br>FOCUS</button>
+  </div>
+
+  <div class="lglogo">⊙ LG</div>
+</div>
+
+<!-- CONFIG BUTTON -->
+<button class="cfgbtn" onclick="cfgTog()">⚙ Configurar TV</button>
+
+<!-- CONFIG PANEL -->
+<div class="cfgp" id="cfgp">
+  <div class="cfgl">CONEXÃO LG WebOS — AN-MR650A</div>
+  <div class="cfgr"><label>IP da TV</label><input id="tvIp" placeholder="192.168.0.103"></div>
+  <div class="cfgr"><label>Porta</label><input id="tvPort" value="3000"></div>
+  <div class="cfgr"><label>Client Key</label><input id="tvKey" placeholder="(gerado no pareamento)"></div>
+  <button class="cfgconn" onclick="conn()">Conectar / Parear</button>
+  <div style="color:#303030;font-size:10px;margin-top:7px;line-height:1.6">1ª conexão: aceite o pareamento na TV.<br>Porta padrão: 3000 (webOS 2017).</div>
+  <div class="cfgl" style="margin-top:9px">LOG</div>
+  <div class="logb" id="log">Aguardando...</div>
+  <button onclick="document.getElementById('log').textContent='Aguardando...'" style="margin-top:4px;background:none;border:1px solid #181818;border-radius:4px;color:#343434;font-size:10px;padding:3px 9px;cursor:pointer">Limpar</button>
+</div>
+
+<div class="tst" id="tst"></div>
+
+<script>
+// ── STATE ──
+let ip=localStorage.getItem('tvIp')||'', pt=localStorage.getItem('tvPort')||'3000', ky=localStorage.getItem('tvKey')||'';
+let ws=null, wi=null, cn=false, ir=false, iq=null, mid=1, muOn=false, micOn=false, tpOn=false, S=5;
+let LX=null, LY=null, MV=false, TID=null;
+
+document.getElementById('tvIp').value=ip;
+document.getElementById('tvPort').value=pt;
+document.getElementById('tvKey').value=ky;
+if(ip&&ky) setTimeout(conn,800);
+
+// Chamado pelo Android no onResume — reconecta automaticamente se necessário
+function autoConnect(){
+  if(cn) return; // já conectado, ignora
+  if(ip&&ky){ L('Reconectando...'); conn(); }
+}
+
+// ── LOG ──
+function L(m,t){
+  const b=document.getElementById('log'), d=document.createElement('div');
+  d.style.color={o:'#4caf50',w:'#f90',e:'#e53'}[t]||'#424242';
+  d.textContent=new Date().toLocaleTimeString('pt-BR')+' '+m;
+  b.appendChild(d); b.scrollTop=b.scrollHeight;
+}
+
+// ── CONNECT ──
+function conn(){
+  ip=document.getElementById('tvIp').value.trim();
+  pt=document.getElementById('tvPort').value.trim()||'3000';
+  ky=document.getElementById('tvKey').value.trim();
+  if(!ip){T('Digite o IP da TV');return;}
+  localStorage.setItem('tvIp',ip); localStorage.setItem('tvPort',pt); localStorage.setItem('tvKey',ky);
+  setS('connecting'); L('Conectando ws://'+ip+':'+pt+'...');
+  if(ws){try{ws.close();}catch(e){}}
+  cn=false; ir=false; iq=null;
+  ws=new WebSocket('ws://'+ip+':'+pt);
+  ws.onopen=()=>{
+    L('WS aberto','o');
+    // Handshake com permissões completas — necessário para navegação e controles
+    ws.send(JSON.stringify({type:'register',id:'r0',payload:{
+      forcePairing:false, pairingType:'PROMPT',
+      manifest:{manifestVersion:1,appVersion:'1.1',
+        signed:{
+          created:'20140509', appId:'com.lge.test', vendorId:'com.lge',
+          localizedAppNames:{'':'LG Remote App','ko-KR':'리모컨 앱'},
+          localizedVendorNames:{'':'LG Electronics'},
+          permissions:['TEST_SECURE','CONTROL_INPUT_TEXT','CONTROL_MOUSE_AND_KEYBOARD',
+            'READ_INSTALLED_APPS','READ_LGE_SDX','READ_NOTIFICATIONS','SEARCH',
+            'WRITE_SETTINGS','WRITE_NOTIFICATION_ALERT','CONTROL_POWER',
+            'READ_CURRENT_CHANNEL','READ_RUNNING_APPS','READ_UPDATE_INFO',
+            'UPDATE_FROM_REMOTE_APP','READ_LGE_TV_INPUT_EVENTS','READ_TV_CURRENT_TIME'],
+          serial:'2f930e2d2cfe083771f68e4fe7bb07'
+        },
+        permissions:['LAUNCH','LAUNCH_WEBAPP','APP_TO_APP','CLOSE','TEST_OPEN','TEST_PROTECTED',
+          'CONTROL_AUDIO','CONTROL_DISPLAY','CONTROL_INPUT_JOYSTICK','CONTROL_INPUT_MEDIA_PLAYBACK',
+          'CONTROL_MOUSE_AND_KEYBOARD','READ_INSTALLED_APPS','READ_LGE_SDX','READ_NOTIFICATIONS',
+          'SEARCH','WRITE_NOTIFICATION_ALERT','CONTROL_POWER','READ_CURRENT_CHANNEL',
+          'READ_RUNNING_APPS','UPDATE_FROM_REMOTE_APP','READ_LGE_TV_INPUT_EVENTS','READ_TV_CURRENT_TIME']
+      },
+      'client-key':ky||undefined
+    }}));
+  };
+  ws.onmessage=e=>{
+    let m; try{m=JSON.parse(e.data);}catch(x){return;}
+    L('← '+JSON.stringify(m).substring(0,85));
+    if(iq&&m.id===iq){
+      iq=null;
+      if(m.payload&&m.payload.socketPath){
+        L('Input socket: '+m.payload.socketPath,'o');
+        wi=new WebSocket(m.payload.socketPath);
+        wi.onopen =()=>{ ir=true;  L('Input socket pronto ✓','o'); };
+        wi.onclose=()=>{ ir=false; L('Input socket fechado','w'); };
+        wi.onerror=()=>{ ir=false; L('Input socket N/A — usando SSAP fallback','w'); };
+      } else { L('Input socket não suportado neste modelo/firmware','w'); }
+      return;
+    }
+    // Callbacks de requests SSAP pendentes
+    if(CB[m.id]){
+      const cb=CB[m.id]; delete CB[m.id];
+      cb(m.payload||{});
+      return;
+    }
+    if(m.type==='registered'){
+      const k=m.payload&&m.payload['client-key'];
+      if(k){ky=k;localStorage.setItem('tvKey',k);document.getElementById('tvKey').value=k;L('Client-key: '+k,'o');}
+      cn=true; setS('connected'); T('✓ Conectado!');
+      // Solicita input socket — necessário para setas, back, home, guide
+      iq='i'+(mid++);
+      ws.send(JSON.stringify({type:'request',id:iq,uri:'ssap://com.webos.service.networkinput/getPointerInputSocket'}));
+    } else if(m.type==='response'&&m.id==='r0'){
+      T('Aceite o pareamento na TV ›'); L('Aguardando aceite na TV...','w');
+    } else if(m.type==='error'&&m.id==='r0'){
+      setS('error'); L('Erro registro: '+JSON.stringify(m),'e');
+    }
+  };
+  ws.onclose=e=>{ cn=false; ir=false; setS('disconnected'); L('WS fechado code='+e.code,'w'); };
+  ws.onerror= ()=>{ cn=false; setS('error'); T('Erro de conexão'); L('WS erro','e'); };
+}
+
+// ── Map de callbacks para requests SSAP ──
+const CB = {};
+
+// ── SSAP com suporte a callback opcional ──
+function sp(uri, payload, cb){
+  if(!ws||ws.readyState!==1){L('WS não pronto','e');return;}
+  const id='c'+(mid++);
+  if(cb) CB[id]=cb;
+  ws.send(JSON.stringify({type:'request',id,uri,payload}));
+  L('→ '+uri.split('/').pop());
+}
+
+// ── BOTÃO via input socket (MAIÚSCULO — formato correto WebOS) ──
+// Fonte verificada: bscpylgtv, lgtv2, hobbyquaker/lgtv2
+// Formato: "type:button\nname:KEYNAME\n\n"
+// Fallback: ssap://com.webos.service.inp.media.remotecontroller/sendRemoteKey
+const LBL={
+  UP:'▲',DOWN:'▼',LEFT:'◀',RIGHT:'▶',ENTER:'OK',BACK:'Voltar',EXIT:'Sair',
+  HOME:'Home',GUIDE:'Guia',SETTINGS:'Config',INFO:'Info',
+  RED:'Vermelho',GREEN:'Verde',YELLOW:'Amarelo',BLUE:'Azul',
+  MUTE:'Mudo',LIST:'Lista',MORE:'Mais',MAGNIFIER_ZOOM:'Live Zoom',
+  CHANNELUP:'CH∧',CHANNELDOWN:'CH∨',VOLUMEUP:'Vol+',VOLUMEDOWN:'Vol−',
+  NETFLIX:'Netflix',AMAZON:'Amazon',
+  PLAY:'Play',PAUSE:'Pausa',STOP:'Stop',
+  '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9'
+};
+
+function bt(name){
+  if(navigator.vibrate)navigator.vibrate(20);
+  T(LBL[name]||name);
+  if(!cn){L('Não conectado','w');return;}
+  // Input socket — MAIÚSCULO é o formato correto do protocolo WebOS
+  if(ir&&wi&&wi.readyState===1){
+    wi.send('type:button\nname:'+name+'\n\n');
+    return;
+  }
+  // Fallback SSAP sendRemoteKey
+  sp('ssap://com.webos.service.inp.media.remotecontroller/sendRemoteKey',{remoteKey:name});
+}
+
+// ── Volume e Canal — SSAP direto (mais confiável) + fallback input socket ──
+function volUp(){ T('Vol +'); if(!cn)return; sp('ssap://audio/volumeUp',{}); }
+function volDn(){ T('Vol −'); if(!cn)return; sp('ssap://audio/volumeDown',{}); }
+function chUp() { T('CH ∧'); if(!cn)return; sp('ssap://tv/channelUp',{}); if(ir&&wi&&wi.readyState===1)wi.send('type:button\nname:CHANNELUP\n\n'); }
+function chDn() { T('CH ∨'); if(!cn)return; sp('ssap://tv/channelDown',{}); if(ir&&wi&&wi.readyState===1)wi.send('type:button\nname:CHANNELDOWN\n\n'); }
+
+// ── Mute toggle com estado ──
+function mute(){ muOn=!muOn; sp('ssap://audio/setMute',{mute:muOn}); T(muOn?'🔇 Mudo':'🔊 Som'); }
+
+// ── SETTINGS (⚙) = Q.Settings ──
+// PyWebOSTV: inp.menu() = "menu for adjusting settings for the television"
+// = o painel Q.Settings com os ícones coloridos (lateral direita)
+// DASH = sidebar do Live TV (diferente)
+// Sem fallback SSAP (o app de settings abre errado)
+function cfg_settings(){
+  T('Q.Settings ⚙');
+  if(!cn){L('Não conectado','w');return;}
+  if(ir&&wi&&wi.readyState===1){
+    wi.send('type:button\nname:MENU\n\n');
+  } else {
+    T('Input socket necessário para Q.Settings');
+    L('Input socket não disponível','w');
+  }
+}
+
+// ── INPUT (⇄) ──
+// Usa callback registrado no map CB — sem sobrescrever ws.onmessage
+// WebOS 3.9: getExternalInputList retorna payload.devices (ou payload.list como fallback)
+function input_btn(){
+  T('Buscando entradas...');
+  if(!cn){L('Não conectado','w');return;}
+  sp('ssap://tv/getExternalInputList', {}, function(payload){
+    L('Entradas recebidas: '+JSON.stringify(payload).substring(0,120),'o');
+    const raw = payload.devices || payload.list || [];
+    const items = [];
+    items.push({label:'📺 Live TV',   action:'launch', id:'com.webos.app.livetv'});
+    raw.forEach(function(d){
+      items.push({label: d.label||d.id||'Entrada', action:'input', id: d.id});
+    });
+    items.push({label:'📱 Screen Share', action:'launch', id:'com.webos.app.screen-mirroring'});
+    showInputPicker(items);
+  });
+}
+
+function showInputPicker(items){
+  const old=document.getElementById('iPick'); if(old)old.remove();
+  const d=document.createElement('div');
+  d.id='iPick';
+  d.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#181818;border:1px solid #333;border-radius:14px;padding:14px;z-index:999;min-width:230px;max-width:90vw;box-shadow:0 8px 30px rgba(0,0,0,.92);max-height:80vh;overflow-y:auto';
+  let h='<div style="color:#aaa;font-size:13px;font-weight:bold;margin-bottom:10px;text-align:center">🔌 Selecionar Entrada</div>';
+  items.forEach(function(item){
+    h+='<button onclick="selectInput(\''+item.action+'\',\''+item.id+'\')" style="width:100%;padding:10px 14px;margin-bottom:6px;background:#222;border:1px solid #2e2e2e;border-radius:8px;color:#ccc;font-size:12px;cursor:pointer;display:block;text-align:left">'+item.label+'</button>';
+  });
+  h+='<button onclick="document.getElementById(\'iPick\').remove()" style="width:100%;padding:8px;margin-top:4px;background:#2a0a0a;border:1px solid #4a1a1a;border-radius:8px;color:#e53935;font-size:11px;cursor:pointer">✕ Cancelar</button>';
+  d.innerHTML=h; document.body.appendChild(d);
+  T('Selecione a entrada');
+}
+
+function selectInput(action, id){
+  const d=document.getElementById('iPick'); if(d)d.remove();
+  if(action==='launch') sp('ssap://system.launcher/launch',{id:id});
+  else sp('ssap://tv/switchInput',{inputId:id});
+  T('Trocando para '+id.split('.').pop());
+}
+
+// ── MIC ──
+// No APK: usa interface nativa Android se disponível (NativeSpeech)
+// Fallback: Web Speech API do browser
+function mc(){
+  if(micOn) return;
+  micOn=true;
+  document.getElementById('bmic').classList.add('on');
+  // Tenta interface nativa Android (injetada pelo MainActivity)
+  if(typeof NativeSpeech !== 'undefined' && NativeSpeech.startListening){
+    T('🎤 Fale agora...');
+    NativeSpeech.startListening();
+    return;
+  }
+  // Fallback: Web Speech API
+  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){
+    T('Voz não suportada neste dispositivo');
+    micOn=false; document.getElementById('bmic').classList.remove('on');
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const r=new SR(); r.lang='pt-BR'; r.start(); T('🎤 Fale agora...');
+  r.onresult=ev=>{
+    const tx=ev.results[0][0].transcript;
+    T('🔍 "'+tx+'"');
+    if(cn) sp('ssap://com.webos.service.search/search',{query:tx});
+  };
+  r.onend  =()=>{micOn=false;document.getElementById('bmic').classList.remove('on');};
+  r.onerror=()=>{micOn=false;document.getElementById('bmic').classList.remove('on');T('Erro no microfone');};
+}
+
+// ── Chamado pelo Android nativo quando o reconhecimento retorna ──
+function onSpeechResult(text){
+  micOn=false; document.getElementById('bmic').classList.remove('on');
+  if(!text){T('Nada reconhecido');return;}
+  T('🔍 "'+text+'"');
+  if(cn) sp('ssap://com.webos.service.search/search',{query:text});
+}
+
+// ── Home — SSAP + input socket ──
+function home(){
+  T('Home'); if(!cn)return;
+  sp('ssap://system.launcher/home',{});
+  if(ir&&wi&&wi.readyState===1)wi.send('type:button\nname:HOME\n\n');
+}
+
+// ── Click — input socket ──
+function ck(){
+  if(!cn){T('Não conectado');return;}
+  if(navigator.vibrate)navigator.vibrate(26);
+  if(ir&&wi&&wi.readyState===1){ wi.send('type:click\n\n'); T('◉ Click'); }
+  else bt('ENTER');
+}
+
+// ── TRACKPAD ──
+function tpTog(){
+  tpOn=!tpOn;
+  document.getElementById('tpp').classList.toggle('op',tpOn);
+  document.getElementById('tpbtn').classList.toggle('on',tpOn);
+  document.getElementById('tpar').textContent=tpOn?'▲':'▼';
+}
+
+const TA=document.getElementById('tpa');
+TA.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  const t=e.changedTouches[0]; TID=t.identifier; LX=t.clientX; LY=t.clientY; MV=false;
+  const d=document.getElementById('tpd'), r=TA.getBoundingClientRect();
+  d.style.left=(t.clientX-r.left)+'px'; d.style.top=(t.clientY-r.top)+'px';
+  d.classList.add('on');
+  document.getElementById('tph').classList.add('gn');
+},{passive:false});
+
+TA.addEventListener('touchmove',e=>{
+  e.preventDefault(); if(!cn)return;
+  let t=null;
+  for(let i=0;i<e.changedTouches.length;i++)if(e.changedTouches[i].identifier===TID){t=e.changedTouches[i];break;}
+  if(!t)return;
+  const dx=(t.clientX-LX)*S*.85, dy=(t.clientY-LY)*S*.85;
+  LX=t.clientX; LY=t.clientY;
+  if(Math.abs(dx)>.5||Math.abs(dy)>.5){
+    MV=true;
+    const d=document.getElementById('tpd'), r=TA.getBoundingClientRect();
+    d.style.left=(t.clientX-r.left)+'px'; d.style.top=(t.clientY-r.top)+'px';
+    if(ir&&wi&&wi.readyState===1)wi.send('type:move\ndx:'+dx.toFixed(2)+'\ndy:'+dy.toFixed(2)+'\n\n');
+  }
+},{passive:false});
+
+TA.addEventListener('touchend',e=>{
+  e.preventDefault();
+  document.getElementById('tpd').classList.remove('on');
+  if(!MV&&cn)ck();
+  LX=null; LY=null; MV=false;
+},{passive:false});
+
+// ── Scroll wheel por gesto ──
+const WR=document.getElementById('wr'); let WY=0, WD='';
+WR.addEventListener('touchstart',e=>{WY=e.touches[0].clientY;},{passive:true});
+WR.addEventListener('touchmove',e=>{
+  const dy=e.touches[0].clientY-WY;
+  if(Math.abs(dy)>18){const d=dy>0?'DOWN':'UP';if(d!==WD){bt(d);WY=e.touches[0].clientY;WD=d;}}
+},{passive:true});
+WR.addEventListener('touchend',()=>{WD='';});
+
+// ── STATUS ──
+function setS(s){
+  const d=document.getElementById('dt'), t=document.getElementById('stx'), i=document.getElementById('sip');
+  d.className='dt';
+  if(s==='connected')  {d.classList.add('on');t.textContent='Conectado';i.textContent=ip;document.getElementById('tpbtn').style.display='flex';}
+  if(s==='connecting') {t.textContent='Conectando...';i.textContent=ip;}
+  if(s==='disconnected'){t.textContent='Desconectado';i.textContent='';}
+  if(s==='error')      {t.textContent='Erro de conexão';i.textContent='';}
+}
+
+// ── TOAST ──
+let TT;
+function T(m){
+  const t=document.getElementById('tst');
+  t.textContent=m; t.classList.add('on');
+  clearTimeout(TT); TT=setTimeout(()=>t.classList.remove('on'),1200);
+}
+
+// ── CONFIG ──
+function cfgTog(){
+  const p=document.getElementById('cfgp');
+  p.style.display=p.style.display==='block'?'none':'block';
+}
+</script>
+</body>
+</html>
